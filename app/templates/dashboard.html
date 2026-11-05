@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="h3 mb-4">Dashboard</h1>
+
+<div class="row g-3 mb-4">
+  {% for label, value in [("Customers", "{:,}".format(kpis.customers)),
+                          ("Active accounts", "{:,}".format(kpis.active_accounts)),
+                          ("Total deposits held", kpis.total_balance | money),
+                          ("Transactions, last 30 days", "{:,}".format(kpis.txns_30d))] %}
+  <div class="col-6 col-lg-3">
+    <div class="card stat h-100">
+      <div class="card-body">
+        <div class="stat-label">{{ label }}</div>
+        <div class="stat-value">{{ value }}</div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-lg-8">
+    <div class="card h-100">
+      <div class="card-body">
+        <h2 class="h6 card-title">Money in and out, last 12 months</h2>
+        <div class="chart-box"><canvas id="chart-monthly" aria-label="Money in and out by month" role="img"></canvas></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <h2 class="h6 card-title">Transactions by channel</h2>
+        <div class="chart-box"><canvas id="chart-channels" aria-label="Number of transactions by channel" role="img"></canvas></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-5">
+    <div class="card h-100">
+      <div class="card-body">
+        <h2 class="h6 card-title">Deposits held, by branch</h2>
+        <div class="chart-box tall"><canvas id="chart-branches" aria-label="Deposits held by branch" role="img"></canvas></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-7">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h2 class="h6 card-title mb-0">Latest transactions</h2>
+          <button class="btn btn-sm btn-outline-secondary" hx-get="{{ url_for('bank.recent') }}"
+                  hx-target="#recent" hx-swap="innerHTML">Refresh</button>
+        </div>
+        <div id="recent">{% include "_recent.html" %}</div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script id="chart-data" type="application/json">{{ charts | tojson }}</script>
+<script src="{{ url_for('static', filename='vendor/chart.umd.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

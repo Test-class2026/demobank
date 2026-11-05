@@ -1,0 +1,11 @@
+{% if ok %}
+<div class="alert alert-success mb-0">
+  <h2 class="h6 alert-heading">Transfer complete</h2>
+  {{ amount | money }} moved from <code>{{ from_acct }}</code> to <code>{{ to_acct }}</code>.
+</div>
+{% else %}
+<div class="alert alert-danger mb-0">
+  <h2 class="h6 alert-heading">Transfer refused{% if code %} <code class="small">{{ code }}</code>{% endif %}</h2>
+  {{ message }}
+</div>
+{% endif %}

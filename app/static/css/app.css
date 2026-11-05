@@ -1,0 +1,42 @@
+/* --brand is set from BRAND_COLOR in app/config.py */
+:root {
+  --surface: #f5f6f8;
+  --ink: #1a1a1a;
+  --ink-muted: #5c6370;
+  --series-in: #2a78d6;
+  --series-out: #eb6834;
+}
+
+body { background: var(--surface); color: var(--ink); }
+
+.brand-bar { background: var(--brand); }
+.btn-brand { background: var(--brand); border-color: var(--brand); color: #fff; }
+.btn-brand:hover, .btn-brand:focus { background: var(--brand); filter: brightness(1.15); color: #fff; }
+.btn-brand:disabled { background: var(--brand); opacity: .45; color: #fff; }
+
+main a { color: var(--brand); }
+.brand-bar .navbar-brand, .brand-bar .nav-link.active { color: #fff; }
+.brand-bar .nav-link { color: rgba(255, 255, 255, .75); }
+.brand-bar .nav-link:hover { color: #fff; }
+.page-item.active .page-link { background: var(--brand); border-color: var(--brand); }
+.page-link { color: var(--brand); }
+
+/* One line only: the banner is sized for a phone screen */
+.announcement { background: color-mix(in srgb, var(--brand) 82%, #000); color: #fff; padding: .5rem 0; font-size: .95rem; }
+
+.card { border: 1px solid #e3e6eb; box-shadow: none; }
+.stat-label { color: var(--ink-muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
+.stat-value { font-size: 1.6rem; font-weight: 600; line-height: 1.2; margin-top: .25rem; }
+
+.chart-box { position: relative; height: 280px; }
+.chart-box.tall { height: 360px; }
+
+.badge { font-weight: 500; }
+.kyc-verified, .status-active { background: #e6f4ea; color: #1e6b34; }
+.kyc-pending, .status-dormant { background: #fff4e0; color: #8a5300; }
+.kyc-rejected, .status-closed { background: #fdecea; color: #a12622; }
+.txn-deposit, .txn-interest, .txn-transfer_in { background: #e8f0fb; color: #1d5aa6; }
+.txn-withdrawal, .txn-fee, .txn-transfer_out { background: #fdeee6; color: #9c3d12; }
+.amount-in { color: #1e6b34; }
+
+code.version { color: var(--ink-muted); }

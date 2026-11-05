@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ bank_name }}{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+  <style>:root { --brand: {{ brand_color }}; }</style>
+  <script defer src="{{ url_for('static', filename='vendor/alpine.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendor/htmx.min.js') }}"></script>
+</head>
+<body>
+  <nav class="navbar navbar-expand-md brand-bar" data-bs-theme="dark">
+    <div class="container">
+      <a class="navbar-brand fw-semibold" href="{{ url_for('bank.dashboard') }}">{{ bank_name }}</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav"
+              aria-controls="nav" aria-expanded="false" aria-label="Menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="nav">
+        {% set here = request.endpoint %}
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link {{ 'active' if here == 'bank.dashboard' }}" href="{{ url_for('bank.dashboard') }}">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link {{ 'active' if here in ('bank.customers', 'bank.customer', 'bank.account') }}" href="{{ url_for('bank.customers') }}">Customers</a></li>
+          <li class="nav-item"><a class="nav-link {{ 'active' if here == 'bank.transfer_form' }}" href="{{ url_for('bank.transfer_form') }}">Transfer</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  {% if announcement %}
+  <div class="announcement" x-data="{ open: true }" x-show="open" role="status">
+    <div class="container d-flex align-items-center gap-3">
+      <span class="text-truncate flex-grow-1">{{ announcement }}</span>
+      <button type="button" class="btn-close btn-close-white btn-sm" aria-label="Dismiss" @click="open = false"></button>
+    </div>
+  </div>
+  {% endif %}
+
+  <main class="container py-4">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="container py-4 small text-body-secondary d-flex flex-wrap justify-content-between gap-2">
+    <span>{{ bank_name }} · demonstration data only: every customer is invented</span>
+    <span>version <code class="version">{{ version }}</code></span>
+  </footer>
+
+  <script src="{{ url_for('static', filename='vendor/bootstrap.bundle.min.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

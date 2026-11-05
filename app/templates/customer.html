@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}{{ person.full_name }} · {{ bank_name }}{% endblock %}
+{% block content %}
+<nav class="small mb-2"><a href="{{ url_for('bank.customers') }}">Customers</a> /</nav>
+<div class="d-flex flex-wrap align-items-center gap-3 mb-4">
+  <h1 class="h3 mb-0">{{ person.full_name }}</h1>
+  <span class="badge kyc-{{ person.kyc_status | lower }}">KYC {{ person.kyc_status.title() }}</span>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4"><div class="card h-100"><div class="card-body">
+    <div class="stat-label">Email</div><div>{{ person.email }}</div>
+  </div></div></div>
+  <div class="col-md-4"><div class="card h-100"><div class="card-body">
+    <div class="stat-label">City</div><div>{{ person.city or "—" }}</div>
+  </div></div></div>
+  <div class="col-md-4"><div class="card h-100"><div class="card-body">
+    <div class="stat-label">Customer since</div><div>{{ person.created_at.strftime("%d %B %Y") }}</div>
+  </div></div></div>
+</div>
+
+<h2 class="h5">Accounts</h2>
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead><tr><th>Account</th><th>Type</th><th class="d-none d-md-table-cell">Branch</th><th>Status</th>
+                 <th class="d-none d-md-table-cell">Opened</th><th class="text-end">Balance</th></tr></thead>
+      <tbody>
+        {% for a in accounts %}
+        <tr>
+          <td><a href="{{ url_for('bank.account', account_id=a.account_id) }}"><code>{{ a.account_number }}</code></a></td>
+          <td>{{ a.account_type.title() }}</td>
+          <td class="d-none d-md-table-cell">{{ a.branch_name }}</td>
+          <td><span class="badge status-{{ a.status | lower }}">{{ a.status.title() }}</span></td>
+          <td class="d-none d-md-table-cell">{{ a.opened_on.strftime("%d %b %Y") }}</td>
+          <td class="text-end text-nowrap">{{ a.balance | money }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="text-body-secondary">No accounts.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

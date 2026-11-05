@@ -1,0 +1,6 @@
+{% if acct %}
+<span class="text-success-emphasis">{{ acct.full_name }} · {{ acct.account_type.title() }} ·
+  {{ acct.balance | money }}{% if acct.status != "ACTIVE" %} · <strong>{{ acct.status.title() }}</strong>{% endif %}</span>
+{% elif number %}
+<span class="text-danger">No account with that number.</span>
+{% endif %}

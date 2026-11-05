@@ -1,0 +1,27 @@
+# Terraform: your own values, downloaded providers, and the record of what was built
+terraform/terraform.tfvars
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/crash.log
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+
+# Written by the pipeline at deploy time
+VERSION
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Never commit keys
+*.pem
+id_ed25519*
+demobank_deploy*

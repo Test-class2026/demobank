@@ -1,0 +1,7 @@
+# Store every text file with Linux line endings, whichever laptop it was written on.
+# A shell script with Windows line endings fails on the server.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.ico binary

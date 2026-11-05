@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}{{ acct.account_number }} · {{ bank_name }}{% endblock %}
+{% block content %}
+<nav class="small mb-2">
+  <a href="{{ url_for('bank.customers') }}">Customers</a> /
+  <a href="{{ url_for('bank.customer', customer_id=acct.customer_id) }}">{{ acct.full_name }}</a> /
+</nav>
+<div class="d-flex flex-wrap align-items-center gap-3 mb-4">
+  <h1 class="h3 mb-0">{{ acct.account_type.title() }} account <code>{{ acct.account_number }}</code></h1>
+  <span class="badge status-{{ acct.status | lower }}">{{ acct.status.title() }}</span>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3"><div class="card stat h-100"><div class="card-body">
+    <div class="stat-label">Balance</div><div class="stat-value">{{ acct.balance | money }}</div>
+  </div></div></div>
+  <div class="col-6 col-md-3"><div class="card h-100"><div class="card-body">
+    <div class="stat-label">Branch</div><div>{{ acct.branch_name }}</div>
+  </div></div></div>
+  <div class="col-6 col-md-3"><div class="card h-100"><div class="card-body">
+    <div class="stat-label">Opened</div><div>{{ acct.opened_on.strftime("%d %B %Y") }}</div>
+  </div></div></div>
+  <div class="col-6 col-md-3"><div class="card h-100"><div class="card-body">
+    <div class="stat-label">Currency</div><div>{{ acct.currency }}</div>
+  </div></div></div>
+</div>
+
+<h2 class="h5">Statement</h2>
+<div class="card">
+  <div class="table-responsive">
+    <table class="table align-middle mb-0">
+      <thead><tr><th>Date</th><th>Description</th><th class="d-none d-md-table-cell">Channel</th>
+                 <th class="text-end">Money in</th><th class="text-end">Money out</th></tr></thead>
+      <tbody id="statement">{% include "_statement_rows.html" %}</tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

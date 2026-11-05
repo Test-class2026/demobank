@@ -1,0 +1,41 @@
+<p class="small text-body-secondary">{{ "{:,}".format(total) }} customer{{ "" if total == 1 else "s" }}</p>
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead><tr><th>Name</th><th class="d-none d-md-table-cell">Email</th><th class="d-none d-lg-table-cell">City</th>
+                 <th>KYC</th><th class="text-end">Accounts</th><th class="text-end">Total balance</th></tr></thead>
+      <tbody>
+        {% for c in rows %}
+        <tr>
+          <td><a href="{{ url_for('bank.customer', customer_id=c.customer_id) }}">{{ c.full_name }}</a></td>
+          <td class="d-none d-md-table-cell small">{{ c.email }}</td>
+          <td class="d-none d-lg-table-cell">{{ c.city or "" }}</td>
+          <td><span class="badge kyc-{{ c.kyc_status | lower }}">{{ c.kyc_status.title() }}</span></td>
+          <td class="text-end">{{ c.accounts }}</td>
+          <td class="text-end text-nowrap">{{ c.total_balance | money }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="text-body-secondary">No customers match.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% if pages > 1 %}
+<nav class="mt-3" aria-label="Pages">
+  <ul class="pagination pagination-sm flex-wrap">
+    {% for p in page_links(page, pages) %}
+    {% if p is none %}
+    <li class="page-item disabled"><span class="page-link">…</span></li>
+    {% else %}
+    <li class="page-item {{ 'active' if p == page }}">
+      <a class="page-link" href="{{ url_for('bank.customers', q=q or None, kyc=kyc or None, page=p) }}"
+         hx-get="{{ url_for('bank.customers', q=q or None, kyc=kyc or None, page=p) }}"
+         hx-target="#results" hx-push-url="true">{{ p }}</a>
+    </li>
+    {% endif %}
+    {% endfor %}
+  </ul>
+</nav>
+{% endif %}

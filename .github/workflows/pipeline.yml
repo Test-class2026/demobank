@@ -1,0 +1,102 @@
+name: pipeline
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    # A throwaway Oracle database, created for this run and deleted after it
+    services:
+      oracle:
+        image: gvenzl/oracle-free:23-slim
+        env:
+          ORACLE_PASSWORD: ci_only_throwaway
+          APP_USER: demobank
+          APP_USER_PASSWORD: ci_only_throwaway
+        ports:
+          - 1521:1521
+        options: >-
+          --health-cmd healthcheck.sh
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 30
+
+    env:
+      DB_USER: demobank
+      DB_PASSWORD: ci_only_throwaway
+      DB_DSN: localhost:1521/FREEPDB1
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install packages
+        run: pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: Unit tests
+        run: pytest
+
+      - name: Apply every migration to the throwaway database
+        run: python scripts/migrate.py
+
+      - name: Apply them again (must change nothing)
+        run: python scripts/migrate.py
+
+      - name: Smoke-test the app against the database
+        run: pytest tests/test_with_database.py
+        env:
+          RUN_DB_TESTS: "1"
+
+  deploy:
+    needs: test
+    # Only after a merge to main (or a manual run on main), and only once DEPLOY_ENABLED is switched on
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+      vars.DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    environment: production
+    concurrency: production
+
+    env:
+      EC2_HOST: ${{ secrets.EC2_HOST }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Package the release
+        run: |
+          VERSION="${GITHUB_SHA::7}"
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "$VERSION" > VERSION
+          tar -czf release.tgz VERSION app db scripts deploy requirements.txt
+
+      - name: Load the deploy key
+        env:
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$EC2_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+
+      - name: Copy the release to the server
+        run: >-
+          scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=accept-new
+          release.tgz "ubuntu@$EC2_HOST:/tmp/demobank-$VERSION.tgz"
+
+      - name: Deploy on the server
+        run: >-
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=accept-new "ubuntu@$EC2_HOST"
+          "bash -s -- $VERSION" < deploy/remote_deploy.sh
+
+      - name: Check it from the outside
+        run: curl -fsS "http://$EC2_HOST/health"

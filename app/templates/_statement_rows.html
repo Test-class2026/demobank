@@ -1,0 +1,21 @@
+{% for t in txns %}
+{% set credit = t.txn_type in ("DEPOSIT", "INTEREST", "TRANSFER_IN") %}
+<tr>
+  <td class="text-nowrap small">{{ t.txn_date.strftime("%d %b %Y %H:%M") }}</td>
+  <td>{{ t.description or t.txn_type.replace("_", " ").title() }}</td>
+  <td class="d-none d-md-table-cell small">{{ t.channel | channel }}</td>
+  <td class="text-end text-nowrap amount-in">{{ (t.amount | money) if credit }}</td>
+  <td class="text-end text-nowrap">{{ (t.amount | money) if not credit }}</td>
+</tr>
+{% else %}
+<tr><td colspan="5" class="text-body-secondary">No transactions on this account.</td></tr>
+{% endfor %}
+{% if more %}
+<tr id="more-row">
+  <td colspan="5" class="text-center">
+    <button class="btn btn-sm btn-outline-secondary"
+            hx-get="{{ url_for('bank.account', account_id=acct.account_id, page=page + 1) }}"
+            hx-target="#more-row" hx-swap="outerHTML">Show older transactions</button>
+  </td>
+</tr>
+{% endif %}

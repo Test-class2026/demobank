@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} · {{ bank_name }}{% endblock %}
+{% block content %}
+<div class="card border-danger-subtle">
+  <div class="card-body">
+    <h1 class="h4">{{ title }}</h1>
+    <p class="mb-2">{{ message }}</p>
+    {% if code %}<p class="small text-body-secondary mb-0">Oracle error: <code>{{ code }}</code></p>{% endif %}
+  </div>
+</div>
+{% endblock %}

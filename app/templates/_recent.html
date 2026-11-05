@@ -1,0 +1,18 @@
+<div class="table-responsive">
+  <table class="table table-sm align-middle mb-0">
+    <thead><tr><th>When</th><th>Customer</th><th>Type</th><th class="text-end">Amount</th></tr></thead>
+    <tbody>
+      {% for t in recent %}
+      <tr>
+        <td class="text-nowrap small">{{ t.txn_date.strftime("%d %b %Y %H:%M") }}</td>
+        <td><a href="{{ url_for('bank.account', account_id=t.account_id) }}">{{ t.full_name }}</a>
+            <div class="small text-body-secondary">{{ t.description or "" }}</div></td>
+        <td><span class="badge txn-{{ t.txn_type | lower }}">{{ t.txn_type.replace("_", " ").title() }}</span></td>
+        <td class="text-end text-nowrap">{{ t.amount | money }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="4" class="text-body-secondary">No transactions yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
