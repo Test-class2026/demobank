@@ -1,6 +1,6 @@
 #!/bin/bash
 # First-boot setup for the DemoBank server. Runs once, as root, through cloud-init.
-# Watch it with: cloud-init status --wait   (log: /var/log/cloud-init-output.log)
+# Watch it with: cloud-init status --wait  (log: /var/log/cloud-init-output.log)
 set -euo pipefail
 export DEBIAN_FRONTEND=noninteractive
 
