@@ -1,4 +1,4 @@
-# Terraform: your own values, downloaded providers, and the record of what was built
+# Terraform: your own values, downloaded providers, and the record of what was built here
 terraform/terraform.tfvars
 terraform/.terraform/
 terraform/*.tfstate

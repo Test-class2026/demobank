@@ -4,7 +4,7 @@ A small banking application for the **DevOps, Oracle DBA and Advanced SQL** cour
 Every customer, account and transaction in it is invented, and every email address is at `example.com`.
 
 | Day | What happens to this repository |
-|-----|---------------------------------|
+|-----|------------------------------|
 | 1 | Git, Terraform and the pipeline: change `app/config.py`, build the server, ship through GitHub Actions |
 | 2 | Oracle administration on the server's database: users, roles, auditing, backup and recovery |
 | 3 | SQL and PL/SQL: `bank_pkg.transfer_funds`, triggers, analytic queries, execution plans |
