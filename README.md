@@ -9,7 +9,7 @@ Every customer, account and transaction in it is invented, and every email addre
 | 2 | Oracle administration on the server's database: users, roles, auditing, backup and recovery |
 | 3 | SQL and PL/SQL: `bank_pkg.transfer_funds`, triggers, analytic queries, execution plans |
 
-## What is where
+## What is where it is
 
 | Path | What it is |
 |------|------------|
