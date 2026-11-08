@@ -10,7 +10,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    # A throwaway Oracle database, created for this run and deleted after it
+    # A throwaway Oracle database, created for this run and deleted after it..
     services:
       oracle:
         image: gvenzl/oracle-free:23-slim
