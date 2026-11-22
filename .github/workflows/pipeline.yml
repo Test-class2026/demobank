@@ -51,8 +51,8 @@ jobs:
       - name: Apply them again (must change nothing)
         run: python scripts/migrate.py
 
-      - name: Smoke-test the app against the database
-        run: pytest tests/test_with_database.py
+      - name: Test the app and the PL/SQL against the database
+        run: pytest
         env:
           RUN_DB_TESTS: "1"
 
