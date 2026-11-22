@@ -36,7 +36,7 @@ docker run -d --name oracle --restart unless-stopped \
   -p 127.0.0.1:1521:1521 \
   --env-file /etc/demobank/oracle.env \
   -v oracle-data:/opt/oracle/oradata \
-  gvenzl/oracle-free:23-slim
+  gvenzl/oracle-free:23
 
 # Where the pipeline puts each release
 install -d -o ubuntu -g ubuntu /opt/demobank /opt/demobank/releases
