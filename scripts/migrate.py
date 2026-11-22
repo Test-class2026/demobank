@@ -107,6 +107,15 @@ def main():
                 first_line = statement.splitlines()[0][:80]
                 print(f"FAILED in {f.name}, at: {first_line}\n{exc.args[0].message}", file=sys.stderr)
                 raise SystemExit(1)
+            if cur.warning:
+                # PL/SQL that does not compile is still created, as INVALID, with only a warning
+                first_line = statement.splitlines()[0][:80]
+                print(f"FAILED in {f.name}, at: {first_line}\nCreated with compilation errors:", file=sys.stderr)
+                cur.execute("SELECT type, name, line, position, text FROM user_errors "
+                            "WHERE attribute = 'ERROR' ORDER BY name, type, sequence")
+                for kind, name, line, position, error in cur:
+                    print(f"  {kind} {name}, line {line}, column {position}: {error}", file=sys.stderr)
+                raise SystemExit(1)
         cur.execute("INSERT INTO schema_history (version, script, checksum) VALUES (:1, :2, :3)",
                     [version, f.name, checksum(text)])
         conn.commit()
